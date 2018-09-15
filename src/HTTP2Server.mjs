@@ -96,10 +96,6 @@ export default class HTTP2Server extends EventEmitter {
             cert: this.certificate
         });
 
-        this.server.on('error', (err) => {
-            this.emit('error', err);
-        });
-
 
         // make sure we can access all active sessions so that
         // we can tell them to go away when the server shuts down
@@ -115,11 +111,32 @@ export default class HTTP2Server extends EventEmitter {
             this.handleRequest(...params);
         });
 
+
+
         return new Promise((resolve, reject) => {
-            this.server.listen(port || this.port, (err) => {
+
+            // since the listen method isn't called o
+            // errors we let it race with the error event
+            const handler = (err) => {
                 if (err) reject(err);
-                else resolve(this);
-            });
+                else {
+
+                    // remove myself as error handler
+                    this.server.off('error', handler);
+
+                    // emit errors to the outside
+                    this.server.on('error', (err) => { 
+                        this.emit('error', err);
+                    });
+
+                    resolve(this);
+                }
+            };
+
+            // the server doesn't return errors in the listen callback
+            // so we need to handle error events instead
+            this.server.on('error', handler);
+            this.server.listen(port || this.port, handler);
         });
     }
 
@@ -165,6 +182,10 @@ export default class HTTP2Server extends EventEmitter {
 
 
         if (routeHandler) {
+            // some users just need to know about the fact that
+            // requests were received
+            this.emit('request-notification');
+        
             request.setParameters(routeHandler.parameters);
             routeHandler.handler(request);
         } else {

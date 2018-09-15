@@ -1,6 +1,6 @@
 'use strict';
 
-import HTTP2OutgoingMessage from '../es-modules/distributed-systems/http2-lib/v1.0.0/src/HTTP2OutgoingMessage.mjs'
+import HTTP2OutgoingMessage from '../es-modules/distributed-systems/http2-lib/x/src/HTTP2OutgoingMessage.mjs'
 
 
 export default class HTTP2Response extends HTTP2OutgoingMessage {
@@ -10,8 +10,18 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     }) {
         super();
         this.request = request;
+        this.responseWasSent = false;
     }
 
+
+
+
+    /**
+    * returns true if the response was already sent
+    */
+    isSent() {
+        return !!this.responseWasSent;
+    }
 
 
 
@@ -32,6 +42,8 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     * send the response
     */
     async send(data) {
+        this.responseWasSent = true;
+
         this.setData(data);
         this.prepareData();
 
