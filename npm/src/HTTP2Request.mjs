@@ -1,5 +1,5 @@
 import HTTP2Response from './HTTP2Response.mjs';
-import { HTTP2IncomingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.mjs'
+import { HTTP2IncomingMessage } from '@distributed-systems/http2-lib/index.mjs'
 
 
 

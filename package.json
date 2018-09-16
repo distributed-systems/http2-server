@@ -2,11 +2,11 @@
   "name": "http2-server",
   "version": "1.0.0",
   "description": "a simple http2 server with some basic routing functionality",
-  "main": "srv/HTTP2Server.mjs",
+  "main": "./npm/src/HTTP2Server.mjs",
   "scripts": {
     "test": "node --no-warnings --experimental-modules ./node_modules/.bin/section ./test/*.mjs"
   },
-  "author": "Lina van der Weg",
+  "author": "Michael van der Weg",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
