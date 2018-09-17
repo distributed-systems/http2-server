@@ -1,6 +1,6 @@
 {
   "name": "@distributed-systems/http2-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a simple http2 server with some basic routing functionality",
   "main": "./npm/src/HTTP2Server.mjs",
   "scripts": {
@@ -8,7 +8,9 @@
   },
   "author": "Michael van der Weg",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@distributed-systems/http2-lib": "^1.0.0"
+  },
   "devDependencies": {
     "section-tests": "^2.2.1"
   }
