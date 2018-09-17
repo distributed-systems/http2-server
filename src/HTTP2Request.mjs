@@ -8,6 +8,34 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
 
+
+    /**
+     * return the method or compare it with the method passed to the function
+     *
+     * @param      {Function}  method  the method you are expecting
+     * @return     {string|boolean}   the method or true if the passed method matches 
+     */
+    method(method) {
+        if (method) return method === this.getHeader(':method');
+        else return this.getHeader(':method');
+    }
+
+
+
+
+    /**
+     * return the requests path
+     *
+     * @return     {string}  the request path
+     */
+    path() {
+        return this.getHeader(':path');
+    }
+
+
+
+
+
     /**
     * get the response object
     */
