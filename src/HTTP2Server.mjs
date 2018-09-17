@@ -39,8 +39,22 @@ export default class HTTP2Server extends EventEmitter {
         this.port = port;
 
         this.activeSessions = new Set();
+
+        // express.js style middlewares
+        this.middlewareds = new Set();
     }
 
+
+
+
+    /**
+     * register a middleware that is called on all routes
+     *
+     * @param      {object}  middleware  The middleware
+     */
+    registerMiddleware(middleware) {
+        this.middlewares.add(middleware);
+    }
 
 
 
@@ -176,6 +190,17 @@ export default class HTTP2Server extends EventEmitter {
             stream,
             headers,
         });
+
+        for (const middleware of this.middlewares.values()) {
+            const continue = await middleware(request);
+
+            // abort if the middleware tells us to do so
+            if (continue === false) {
+                return;
+            }
+        }
+
+        
 
 
         if (routeHandler) {
