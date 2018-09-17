@@ -41,7 +41,7 @@ export default class HTTP2Server extends EventEmitter {
         this.activeSessions = new Set();
 
         // express.js style middlewares
-        this.middlewareds = new Set();
+        this.middlewares = new Set();
     }
 
 
@@ -119,7 +119,7 @@ export default class HTTP2Server extends EventEmitter {
 
 
         this.server.on('stream', (...params) => {
-            this.handleRequest(...params);
+            this.handleRequest(...params).catch(console.error);
         });
 
 
@@ -182,7 +182,7 @@ export default class HTTP2Server extends EventEmitter {
     * @param {HTTPStream} stream - the http2 stream instance
     * @param {object} headers - object containing the http2 headers
     */
-    handleRequest(stream, headers) {
+    async handleRequest(stream, headers) {
         const path = headers[':path'];
         const method = headers[':method'];
         const routeHandler = this.getRouter().resolve(method, path);
@@ -191,12 +191,13 @@ export default class HTTP2Server extends EventEmitter {
             headers,
         });
 
+
         for (const middleware of this.middlewares.values()) {
-            const continue = await middleware(request);
+            const stopExecution = await middleware(request);
 
             // abort if the middleware tells us to do so
-            if (continue === false) {
-                return;
+            if (stopExecution === false) {
+                return false;
             }
         }
 
