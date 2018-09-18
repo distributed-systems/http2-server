@@ -65,7 +65,7 @@ export default class Router {
                     if (route === pathName.toLowerCase()) {
                         return {
                             handler: routes.get(route),
-                            parameters: {},
+                            parameters: new Map(),
                         };
                     }
                 } else {
@@ -77,7 +77,7 @@ export default class Router {
                     if (result) {
                         return {
                             handler: routes.get(route),
-                            parameters: result.groups,
+                            parameters: new Map(Object.keys(result.groups).map((key) => [key, result.groups[key]])),
                         };
                     }
                 }

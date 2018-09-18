@@ -14,7 +14,7 @@ section.continue('Router', (section) => {
             const {handler, parameters} = router.resolve('get', '/test/222');
             assert.equal(handler, handlerFunction);
             assert(parameters);
-            assert.equal(parameters.id, '222');
+            assert.equal(parameters.get('id'), '222');
         });
 
         section.test('Resolve a parameterized string route [case insensitive]', async () => {
@@ -26,7 +26,7 @@ section.continue('Router', (section) => {
             const {handler, parameters} = router.resolve('get', '/TEST/222');
             assert.equal(handler, handlerFunction);
             assert(parameters);
-            assert.equal(parameters.id, '222');
+            assert.equal(parameters.get('id'), '222');
         });
 
         section.test('Resolve a parameterized string route [prefix]', async () => {
