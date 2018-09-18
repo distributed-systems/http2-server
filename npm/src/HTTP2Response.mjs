@@ -1,4 +1,4 @@
-import { HTTP2OutgoingMessage } from '@distributed-systems/http2-lib/index.mjs'
+import { HTTP2OutgoingMessage } from '@distributed-systems/http2-lib'
 
 
 export default class HTTP2Response extends HTTP2OutgoingMessage {

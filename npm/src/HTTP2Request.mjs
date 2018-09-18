@@ -1,5 +1,5 @@
 import HTTP2Response from './HTTP2Response.mjs';
-import { HTTP2IncomingMessage } from '@distributed-systems/http2-lib/index.mjs';
+import { HTTP2IncomingMessage } from '@distributed-systems/http2-lib';
 import queryString from 'querystring';
 
 console.log(URL);
@@ -73,9 +73,80 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
     /**
+     * gets all or a specific parameter
+     *
+     * @param      {<string>}  parameterName  The parameter name
+     */
+    parameter(parameterName) {
+        if (this.hasParameters()) {
+            if (parameterName) {
+                if (this.hasParameter(parameterName)) {
+                    return this.getParameter(parameterName);
+                }
+            } else {
+                return this.getParameters();
+            }
+        }
+    }
+
+
+
+
+    /**
+     * return all paramaters or an empty map
+     *
+     * @return     {<type>}  The parameters.
+     */
+    getParameters() {
+        if (!this._parameters) {
+            this._parameters = new Set();
+        }
+
+        return this._parameters;
+    }
+
+
+
+    /**
+     * returns a specific parameter
+     *
+     * @param      {string}  parameterName  The parameter name
+     * @return     {string}  The parameter.
+     */
+    getParameter(parameterName) {
+        if (this.hasParameter(parameterName)) {
+            return this._parameters.get(parameterName);
+        }
+    }
+
+
+
+    /**
+     * checks if a specific parameter is set
+     *
+     * @param      {<type>}   parameterName  The parameter name
+     * @return     {boolean}  True if has parameter, False otherwise.
+     */
+    hasParameter(parameterName) {
+        return this.hasParameters() && this._parameters.has(parameterName);
+    }
+
+
+    /**
+     * Determines if it has parameters.
+     *
+     * @return     {boolean}  True if has parameters, False otherwise.
+     */
+    hasParameters() {
+        return this.getParameters().size > 0;
+    }
+
+
+
+    /**
     * set parameters extracted from the url
     */
     setParameters(parameters) {
-        this.parameters = parameters;
+        this._parameters = parameters;
     }
 }
