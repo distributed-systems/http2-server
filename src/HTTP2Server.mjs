@@ -190,13 +190,12 @@ export default class HTTP2Server extends EventEmitter {
     * @param {object} headers - object containing the http2 headers
     */
     async handleRequest(stream, headers) {
-        const path = headers[':path'];
-        const method = headers[':method'];
-        const routeHandler = this.getRouter().resolve(method, path);
         const request = new HTTP2Request({
             stream,
             headers,
         });
+
+        const routeHandler = this.getRouter().resolve(request.method(), request.path());
 
 
         for (const middleware of this.middlewares.values()) {
@@ -208,7 +207,6 @@ export default class HTTP2Server extends EventEmitter {
             }
         }
 
-        
 
 
         if (routeHandler) {
@@ -219,7 +217,7 @@ export default class HTTP2Server extends EventEmitter {
             request.setParameters(routeHandler.parameters);
             routeHandler.handler(request);
         } else {
-            request().response().status(404).send(`Path '${path}' for method '${method}' not found!`);
+            request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
         }
     }
 }

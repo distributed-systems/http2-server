@@ -72,5 +72,33 @@ section.continue('HTTP 2 Server', (section) => {
 
             await server.close();
         });
+
+
+
+
+        section.test('Request Query', async () => {
+            const server = new HTTP2Server({
+                secure: false,
+            });
+
+
+            server.getRouter().get('/test-3', (request) => {
+                request.response().status(200).send(request.query());
+            });
+
+            await server.load();
+            await server.listen(8000);
+
+            const client = new HTTP2Client();
+            const request = client.get('http://l.dns.porn:8000/test-3').setQuery({a: 1});
+            const response = await request.send();
+            const data = await response.getData();
+
+            assert(data);
+            assert.equal(typeof data, 'object');
+            assert.equal(data.a, 1);
+
+            await server.close();
+        });
     });
 });
