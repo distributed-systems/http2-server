@@ -1,5 +1,3 @@
-'use strict';
-
 import section from 'section-tests';
 import Router from '../src/Router';
 import assert from 'assert';

@@ -1,5 +1,3 @@
-'use strict';
-
 import section from 'section-tests';
 import HTTP2Server from '../src/HTTP2Server';
 import assert from 'assert';
@@ -49,6 +47,16 @@ section('HTTP 2 Server', (section) => {
             const server = new HTTP2Server({
                 key,
                 certificate,
+            });
+
+            await server.load();
+            await server.listen(8000);
+            await server.close();
+        });
+
+        section.test('Listen & Close (non https)', async () => {
+            const server = new HTTP2Server({
+                secure: false
             });
 
             await server.load();

@@ -15,21 +15,22 @@ export default class HTTP2Server extends EventEmitter {
 
 
     /**
-    * configure the server
-    *
-    * @param {(string|buffer)} key - tls key buffer containing the key or path to 
-    *   the key
-    * @param {(string|buffer)} certificate - tls certificate buffer containing the 
-    *   certificate or path to the key
-    * @param {number} [port=443] - the port the server should listen on
-    * @param {Router} [router=new Router()] - the router to use for dispatching 
-    *   requests
-    */
+     * configure the server
+     *
+     * @param      {Object}           arg1              options object
+     * @param      {string}           arg1.key          The key
+     * @param      {(string|buffer)}  arg1.certificate  tls certificate buffer containing the
+     *                                                  certificate or path to the key
+     * @param      {number}           arg1.port         The port
+     * @param      {object}           arg1.router       The router
+     * @param      {boolean}          arg1.secure       The secure
+     */
     constructor({
         key,
         certificate,
         port = 443,
         router = new Router(),
+        secure = true,
     }) {
         super();
 
@@ -37,6 +38,7 @@ export default class HTTP2Server extends EventEmitter {
         this.key = key;
         this.certificate = certificate;
         this.port = port;
+        this.secure = secure;
 
         this.activeSessions = new Set();
 
@@ -102,10 +104,15 @@ export default class HTTP2Server extends EventEmitter {
     * @param {Promise<HTTP2Server instance>}
     */
     async listen(port) {
-        this.server = http2.createSecureServer({
-            key: this.key, 
-            cert: this.certificate
-        });
+
+        if (this.secure) {
+            this.server = http2.createSecureServer({
+                key: this.key, 
+                cert: this.certificate
+            });
+        } else {
+            this.server = http2.createServer();
+        }
 
 
         // make sure we can access all active sessions so that
