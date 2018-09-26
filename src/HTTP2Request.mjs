@@ -2,8 +2,6 @@ import HTTP2Response from './HTTP2Response.mjs';
 import { HTTP2IncomingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.mjs';
 import queryString from 'querystring';
 
-console.log(URL);
-
 
 export default class HTTP2Request extends HTTP2IncomingMessage {
 
