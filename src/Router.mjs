@@ -77,7 +77,7 @@ export default class Router {
                     if (result) {
                         return {
                             handler: routes.get(route),
-                            parameters: new Map(Object.keys(result.groups).map((key) => [key, result.groups[key]])),
+                            parameters: result.groups ? new Map(Object.keys(result.groups).map((key) => [key, result.groups[key]])) : {},
                         };
                     }
                 }
