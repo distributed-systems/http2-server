@@ -195,8 +195,6 @@ export default class HTTP2Server extends EventEmitter {
             headers,
         });
 
-        const routeHandler = this.getRouter().resolve(request.method(), request.path());
-
 
         for (const middleware of this.middlewares.values()) {
             const stopExecution = await middleware(request);
@@ -208,6 +206,7 @@ export default class HTTP2Server extends EventEmitter {
         }
 
 
+        const routeHandler = this.getRouter().resolve(request.method(), request.path());
 
         if (routeHandler) {
             // some users just need to know about the fact that
@@ -215,7 +214,22 @@ export default class HTTP2Server extends EventEmitter {
             this.emit('request-notification');
         
             request.setParameters(routeHandler.parameters);
-            routeHandler.handler(request);
+
+            // since we don't know if the route handler is async, we
+            // need to wrap it so that it is handled anyways.
+            await (async() => {
+                await routeHandler.handler(request);
+            })().catch((err) => {
+
+                // sent the error only if the request was not sent already
+                if (!request.response().isSent()) {
+                    request.response().status(500).send(err.message);
+                } else {
+
+                    // make sure unhandled errors are logged
+                    console.log(err);
+                }
+            });
         } else {
             request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
         }
