@@ -47,8 +47,8 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         const stream = this.request.stream();
         const headers = this.getHeaderObject();
 
-        stream.on('end', () => {
-            this.emit('end');
+        stream.on('close', () => {
+            this.emit('close');
         });
 
         headers[':status'] = this.statusCode;
