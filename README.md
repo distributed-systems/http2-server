@@ -19,8 +19,9 @@ import HTTP2Server from '@distributed-systems/http2-server';
 
 
 
-Example of a non secure server. Be aware that no browser is sending non secure
-requests to a HTTP2 Server, since it's quite insecure.
+### Example of a non secure server
+
+Be aware that no browser is sending non secure requests to a HTTP2 Server, since it's quite insecure.
 
 ```javascript
 import HTTP2Server from 'es-modules/distributed-systems/http2-server/1.0.0+/index.mjs';
