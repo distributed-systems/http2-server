@@ -2,7 +2,7 @@ name: http2-server
 organization: distributed-systems
 version: 1.0.0
 commands:
-    test: node --no-warnings --experimental-modules ./es-modules/distributed-systems/section-tests/x/bin/section.mjs ./test/*.mjs
+    test: node --no-warnings --experimental-modules ./es-modules/distributed-systems/section-tests/x/bin/run.mjs ./test/*.mjs
 npm-convert:
     source:
         - ./src

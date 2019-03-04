@@ -1,4 +1,4 @@
-import section from 'section-tests';
+import section from '../es-modules/distributed-systems/section-tests/1.x/index.mjs';
 import HTTP2Server from '../src/HTTP2Server';
 import assert from 'assert';
 import path from 'path';
