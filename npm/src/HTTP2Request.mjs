@@ -97,7 +97,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
      */
     getParameters() {
         if (!this._parameters) {
-            this._parameters = new Set();
+            this._parameters = new Map();
         }
 
         return this._parameters;
