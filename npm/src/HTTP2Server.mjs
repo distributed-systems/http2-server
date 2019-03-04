@@ -119,14 +119,14 @@ export default class HTTP2Server extends EventEmitter {
         // we can tell them to go away when the server shuts down
         this.server.on('session', (session) => {
             this.activeSessions.add(session);
+            
             session.on('end', () => {
                 this.activeSessions.delete(session);
             });
-        });
 
-
-        this.server.on('stream', (...params) => {
-            this.handleRequest(...params).catch(console.error);
+            session.on('stream', (...params) => {
+                this.handleRequest(...params).catch(console.error);
+            });
         });
 
 
