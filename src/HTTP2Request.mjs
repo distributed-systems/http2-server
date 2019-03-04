@@ -147,4 +147,59 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     setParameters(parameters) {
         this._parameters = parameters;
     }
+
+
+
+
+    
+    /**
+    * checks if a list of mime types contains a type that can be accepted by the requester
+    */
+    accepts(...mimeTypes) {
+        if (!this.hasHeader('accept')) return null;
+
+        // clean and order by priority
+        const acceptTypes = this.getHeader('accept')
+            .split(',')
+            .map(type => type.trim().toLowerCase())
+            .map((type) => {
+                const match = /;\s*q=(?<q>\d*\.?\d+)\s*$/.exec(type);
+                let priority = 1;
+                
+                if (match) {
+                    priority = Number(match.groups.q);
+                    type = type.replace(match[0], '');
+                }
+
+                return { type, priority };
+            })
+            .sort((a, b) => a.priority < b.priority ? 1 : -1)
+            .map(type => type.type);
+
+
+        // first pass, exact match
+        for (const acceptType of acceptTypes) {
+            for (const mimeType of mimeTypes) {
+                if (mimeType === acceptType) return mimeType;
+            }
+        }
+
+
+        // second pass, just the first part of the type
+        const shortAcceptTypes = acceptTypes.filter(type => /^.+\/\*$/.test(type)).map(type => type.split('/')[0]);
+        const shortMimeTypes = mimeTypes.map(type => ({type, short: type.split('/')[0]}));
+
+        for (const shortAcceptType of shortAcceptTypes) {
+            for (const shortMimeType of shortMimeTypes) {
+                if (shortMimeType.short === shortAcceptType) return shortMimeType.type;
+            }
+        }
+
+
+        // catch all
+        if (acceptTypes.some(type => '*/*')) return mimeTypes[0];
+
+
+        return null;
+    }
 }
