@@ -1,6 +1,6 @@
 {
   "name": "@distributed-systems/http2-server",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "a simple http2 server with some basic routing functionality",
   "main": "./npm/src/HTTP2Server.mjs",
   "scripts": {
