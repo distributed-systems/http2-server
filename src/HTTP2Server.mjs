@@ -197,7 +197,7 @@ export default class HTTP2Server extends EventEmitter {
 
 
         for (const middleware of this.middlewares.values()) {
-            const stopExecution = await middleware.handleRequest(request);
+            const stopExecution = await (typeof middleware.handleRequest === 'function' ? middleware.handleRequest(request) : middleware(request));
 
             // abort if the middleware tells us to do so or the response was sent already
             if (stopExecution === false || request.response().isSent()) {
