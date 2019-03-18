@@ -1,8 +1,8 @@
 import assert from 'assert';
 import fs from 'fs';
+import path from 'path';
 import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.mjs'
 import HTTP2Server from '../src/HTTP2Server';
-import path from 'path';
 import section from '../es-modules/distributed-systems/section-tests/1.x/index.mjs';
 
 
@@ -216,6 +216,32 @@ section.continue('HTTP 2 Server', (section) => {
             const response = await client.get('http://l.dns.porn:8000/test-4').setHeader('accept', 'application/json, text/html; q=.1, application/javascript').send();
             const data = await response.getData();
             assert.equal(data, 'application/json');
+
+            await server.close();
+        });
+
+
+
+        section.test('Stream data to the response', async () => {
+            const server = new HTTP2Server({
+                secure: false,
+            });
+
+
+            server.getRouter().get('/test-5', (request) => {
+                const filePath = path.join(path.dirname(new URL(import.meta.url).pathname), 'data/test.txt');
+                const readStream = fs.createReadStream(filePath);
+
+                request.response().status(200).pipeStream(readStream).send();
+            });
+
+            await server.load();
+            await server.listen(8000);
+
+            const client = new HTTP2Client();
+            const response = await client.get('http://l.dns.porn:8000/test-5').send();
+            const data = await response.getData();
+            assert.equal(data, 'test-data');
 
             await server.close();
         });

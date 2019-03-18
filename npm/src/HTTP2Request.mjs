@@ -15,8 +15,8 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
      * @return     {string|boolean}   the method or true if the passed method matches 
      */
     method(method) {
-        if (method) return method === this.getHeader(':method');
-        else return this.getHeader(':method');
+        if (method) return method.toLowerCase() === this.getHeader(':method').toLowerCase();
+        else return this.getHeader(':method').toLowerCase();
     }
 
 
@@ -197,7 +197,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
         // catch all
-        if (acceptTypes.some(type => '*/*')) return mimeTypes[0];
+        if (acceptTypes.some(type => type === '*/*')) return mimeTypes[0];
 
 
         return null;
