@@ -1,9 +1,9 @@
 import assert from 'assert';
 import fs from 'fs';
 import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.mjs'
-import HTTP2Server from '../src/HTTP2Server';
+import HTTP2Server from '../src/HTTP2Server.mjs';
 import path from 'path';
-import section from 'section-tests';
+import section from '../es-modules/distributed-systems/section-tests/x/index.mjs';
 
 
 const { promises: { readFile} } = fs;
