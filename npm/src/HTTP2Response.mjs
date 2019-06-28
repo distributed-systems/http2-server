@@ -34,6 +34,18 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
 
 
+    /**
+     * pipe the passed stream into the response
+     *
+     * @param      {stream}  readStream  The read stream
+     */
+    pipeStream(readStream) {
+        this.readStream = readStream;
+        return this;
+    }
+
+
+
 
     /**
     * send the response
@@ -47,14 +59,31 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         const stream = this.request.stream();
         const headers = this.getHeaderObject();
 
-        stream.on('close', () => {
-            this.emit('close');
+        const promise = new Promise((resolve, reject) => {
+            stream.on('close', () => {
+                this.emit('close');
+                resolve();
+            });
+
+            stream.on('error', (err) => {
+                reject(err);
+            });
         });
 
         headers[':status'] = this.statusCode;
 
         stream.respond(headers);
-        stream.end(this.getData());
+
+        if (data) {
+            stream.end(this.getData());
+        } else if (this.readStream) {
+            this.readStream.pipe(stream);
+        } else {
+            stream.end();
+        }
+
+        // wait until the data was sent
+        await promise;
 
         return this;
     }

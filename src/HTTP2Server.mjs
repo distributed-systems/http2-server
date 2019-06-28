@@ -119,14 +119,14 @@ export default class HTTP2Server extends EventEmitter {
         // we can tell them to go away when the server shuts down
         this.server.on('session', (session) => {
             this.activeSessions.add(session);
+            
             session.on('end', () => {
                 this.activeSessions.delete(session);
             });
-        });
 
-
-        this.server.on('stream', (...params) => {
-            this.handleRequest(...params).catch(console.error);
+            session.on('stream', (...params) => {
+                this.handleRequest(...params).catch(console.error);
+            });
         });
 
 
@@ -197,10 +197,10 @@ export default class HTTP2Server extends EventEmitter {
 
 
         for (const middleware of this.middlewares.values()) {
-            const stopExecution = await middleware(request);
+            const stopExecution = await (typeof middleware.handleRequest === 'function' ? middleware.handleRequest(request) : middleware(request));
 
-            // abort if the middleware tells us to do so
-            if (stopExecution === false) {
+            // abort if the middleware tells us to do so or the response was sent already
+            if (stopExecution === false || request.response().isSent()) {
                 return false;
             }
         }
