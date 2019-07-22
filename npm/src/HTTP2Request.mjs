@@ -53,6 +53,40 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     }
 
 
+    /**
+     * returns on query parameter or undefined, if not found
+     *
+     * @param      {string]  name    The name
+     */
+    getQueryParameter(name) {
+         return this.getQueryParameters().get(name);
+    }
+
+
+
+    /**
+     * returns all query parameters as a map
+     */
+    getQueryParameters() {
+        if (!this._query) {
+            const queryObject = this.query();
+            this._query = new Map(Object.entries(queryObject));
+        }
+
+        return this._query;
+    }
+
+
+    /**
+     * checks if a given query parameter exists
+     *
+     * @param      {string}   name    The name
+     * @return     {boolean}  True if has query parameter, False otherwise.
+     */
+    hasQueryParameter(name) {
+        return this.getQueryParameters().has(name);
+    }
+
 
 
     /**
