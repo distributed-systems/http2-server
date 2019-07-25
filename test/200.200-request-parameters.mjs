@@ -54,4 +54,33 @@ section.continue('Request parameters', (section) => {
         const response = await request.send();
         await server.close();
     });
+
+    section.test('Set Parameter', async () => {
+        const server = new HTTP2Server({
+            secure: false
+        });
+
+
+        server.getRouter().get('/test-1', (request) => {
+            assert.equal(request.hasParameters(), true);
+            assert.equal(request.hasParameter('done'), true);
+            assert.equal(request.getParameters().size, 1);
+            assert.equal(request.getParameter('done'), true);
+            
+            request.response().status(200).send();
+        });
+
+
+        server.registerMiddleware(async (request) => {
+            request.setParameter('done', true);
+        });
+
+        await server.load();
+        await server.listen(8000);
+
+        const client = new HTTP2Client();
+        const request = client.get('http://l.dns.porn:8000/test-1');
+        const response = await request.send();
+        await server.close();
+    });
 });
