@@ -179,7 +179,11 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     * set parameters extracted from the url
     */
     setParameters(parameters) {
-        this._parameters = parameters;
+        if (this.hasParameters()) {
+            this._parameters = new Map([...this._parameters, ...parameters]);
+        } else {
+            this._parameters = parameters;
+        }
     }
 
 
