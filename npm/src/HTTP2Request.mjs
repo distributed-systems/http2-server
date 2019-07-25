@@ -184,6 +184,13 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
 
+    /**
+     * set a single parameter
+     */
+    setParameter(key, value) {
+        this.getParameters().set(key, value);
+    }
+
 
     
     /**
