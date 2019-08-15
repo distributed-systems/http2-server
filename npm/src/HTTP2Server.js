@@ -2,8 +2,8 @@ import http2 from 'http2';
 import fs from 'fs';
 import {promisify} from 'util';
 import EventEmitter from 'events';
-import Router from './Router.mjs';
-import HTTP2Request from './HTTP2Request.mjs';
+import Router from './Router.js';
+import HTTP2Request from './HTTP2Request.js';
 
 
 const readFile = promisify(fs.readFile);

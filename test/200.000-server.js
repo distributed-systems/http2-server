@@ -1,5 +1,5 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.mjs';
-import HTTP2Server from '../src/HTTP2Server.mjs';
+import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import HTTP2Server from '../src/HTTP2Server.js';
 import assert from 'assert';
 import path from 'path';
 import fs from 'fs';

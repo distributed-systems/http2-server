@@ -1,8 +1,8 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.mjs';
-import Router from '../src/Router.mjs';
+import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import Router from '../src/Router.js';
 import assert from 'assert';
-import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.mjs'
-import HTTP2Server from '../src/HTTP2Server.mjs';
+import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.js'
+import HTTP2Server from '../src/HTTP2Server.js';
 
 
 section.continue('Request parameters', (section) => {

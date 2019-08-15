@@ -1,5 +1,5 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.mjs';
-import Router from '../src/Router.mjs';
+import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import Router from '../src/Router.js';
 import assert from 'assert';
 
 

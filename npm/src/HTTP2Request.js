@@ -1,4 +1,4 @@
-import HTTP2Response from './HTTP2Response.mjs';
+import HTTP2Response from './HTTP2Response.js';
 import { HTTP2IncomingMessage } from '@distributed-systems/http2-lib';
 import queryString from 'querystring';
 

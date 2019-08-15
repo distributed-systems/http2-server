@@ -1,5 +1,5 @@
-import HTTP2Response from './HTTP2Response.mjs';
-import { HTTP2IncomingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.mjs';
+import HTTP2Response from './HTTP2Response.js';
+import { HTTP2IncomingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.js';
 import queryString from 'querystring';
 
 

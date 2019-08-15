@@ -1,17 +1,12 @@
 {
   "name": "@distributed-systems/http2-server",
-  "version": "1.9.1",
+  "version": "2.0.0",
   "description": "a simple http2 server with some basic routing functionality",
-  "main": "./npm/src/HTTP2Server.mjs",
-  "scripts": {
-    "test": "node --no-warnings --experimental-modules ./node_modules/.bin/section ./test/*.mjs"
-  },
-  "author": "Michael van der Weg",
+  "main": "./npm/src/HTTP2Server.js",
+  "author": "Lina van der Weg",
   "license": "MIT",
   "dependencies": {
-    "@distributed-systems/http2-lib": "^1.4.1"
+    "@distributed-systems/http2-lib": "^2.0.2"
   },
-  "devDependencies": {
-    "section-tests": "^2.2.4"
-  }
+  "type": "module"
 }
