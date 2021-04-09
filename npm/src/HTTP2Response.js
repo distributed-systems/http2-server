@@ -61,7 +61,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     */
     async send(data) {
         if (this._sessionIsClosed) {
-            throw new Error('Cannot send reponse: the sesison for this stream was closed!');
+            throw new Error('Cannot send response: the sesison for this stream was closed!');
         }
 
         this.responseWasSent = true;
@@ -88,7 +88,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         try {
             stream.respond(headers);
         } catch (err) {
-            throw new Error(`Failed to send headers for reponse to the path ${this.request.path()}: ${err.message}`);
+            throw new Error(`Failed to send headers for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
         
 
