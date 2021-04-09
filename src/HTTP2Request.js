@@ -94,7 +94,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     */
     response() {
         if (this._sessionIsClosed) {
-            throw new Error(`Cannot create response. The session for this stream was closed (isClosed: ${this._stream.session.closed}) due to an HTTP2 goaway frame (connection error)!`);
+            throw new Error(`Cannot create response du to a connection error. The session for this stream was closed (isClosed: ${this._stream.session.closed}) due to an HTTP2 goaway frame (code: ${this._sessionErrorCode})!`);
         }
 
         if (!this.responseInstance) {
