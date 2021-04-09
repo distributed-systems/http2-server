@@ -1,12 +1,11 @@
 import http2 from 'http2';
 import fs from 'fs';
-import {promisify} from 'util';
 import EventEmitter from 'events';
 import Router from './Router.js';
 import HTTP2Request from './HTTP2Request.js';
 
 
-const readFile = promisify(fs.readFile);
+const { promises: { readFile } } = fs;
 
 
 
@@ -133,28 +132,24 @@ export default class HTTP2Server extends EventEmitter {
 
         return new Promise((resolve, reject) => {
 
-            // since the listen method isn't called o
-            // errors we let it race with the error event
-            const handler = (err) => {
-                if (err) reject(err);
-                else {
-
-                    // remove myself as error handler
-                    this.server.off('error', handler);
-
-                    // emit errors to the outside
-                    this.server.on('error', (err) => { 
-                        this.emit('error', err);
-                    });
-
-                    resolve(this);
-                }
-            };
-
             // the server doesn't return errors in the listen callback
             // so we need to handle error events instead
-            this.server.on('error', handler);
-            this.server.listen(port || this.port, handler);
+            this.server.on('error', reject);
+
+
+            this.server.listen(port || this.port, () => {
+
+                // replace the error handler, that was used to check
+                // for errors while starting the server with anotehr 
+                // handler passing errors down to the outside
+                this.server.off('error', reject);
+
+                this.server.on('error', (err) => { 
+                    this.emit('error', err);
+                });
+
+                resolve(this);
+            });
         });
     }
 

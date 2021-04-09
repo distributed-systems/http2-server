@@ -9,6 +9,15 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         super();
         this.request = request;
         this.responseWasSent = false;
+        this._sessionIsClosed = false;
+    }
+
+
+
+    setUpEvents(request) {
+        request.on('goaway', () => {
+            this._sessionIsClosed = true;
+        });
     }
 
 
@@ -51,6 +60,10 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     * send the response
     */
     async send(data) {
+        if (this._sessionIsClosed) {
+            throw new Error('Cannot send reponse: the sesison for this stream was closed!');
+        }
+
         this.responseWasSent = true;
 
         this.setData(data);
@@ -72,7 +85,12 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
         headers[':status'] = this.statusCode;
 
-        stream.respond(headers);
+        try {
+            stream.respond(headers);
+        } catch (err) {
+            throw new Error(`Failed to send headers for reponse to the path ${this.request.path()}: ${err.message}`);
+        }
+        
 
         if (data) {
             stream.end(this.getData());

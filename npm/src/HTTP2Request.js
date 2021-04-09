@@ -93,6 +93,10 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     * get the response object
     */
     response() {
+        if (this._sessionIsClosed) {
+            throw new Error(`annot create response. The session for this stream was closed!`);
+        }
+
         if (!this.responseInstance) {
             this.responseInstance = new HTTP2Response({
                 request: this
