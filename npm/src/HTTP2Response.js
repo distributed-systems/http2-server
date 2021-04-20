@@ -92,13 +92,18 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         }
         
 
-        if (data) {
-            stream.end(this.getData());
-        } else if (this.readStream) {
-            this.readStream.pipe(stream);
-        } else {
-            stream.end();
+        try {
+            if (data) {
+                stream.end(this.getData());
+            } else if (this.readStream) {
+                this.readStream.pipe(stream);
+            } else {
+                stream.end();
+            }
+        } catch (err)  {
+            throw new Error(`Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
+        
 
         // wait until the data was sent
         await promise;
