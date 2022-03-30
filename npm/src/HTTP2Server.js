@@ -124,7 +124,9 @@ export default class HTTP2Server extends EventEmitter {
             });
 
             session.on('stream', (...params) => {
-                this.handleRequest(...params).catch(console.error);
+                this.handleRequest(...params).catch((e) => {
+                    console.log(e)
+                });
             });
         });
 
@@ -190,6 +192,9 @@ export default class HTTP2Server extends EventEmitter {
             headers,
         });
 
+        if (process.env.HTTP2_DEBUG && process.env.HTTP2_DEBUG.includes('request')) {
+            console.log(`Incoming ${request.method()} request on ${request.url()}`);
+        }
 
         for (const middleware of this.middlewares.values()) {
             const stopExecution = await (typeof middleware.handleRequest === 'function' ? middleware.handleRequest(request) : middleware(request));
