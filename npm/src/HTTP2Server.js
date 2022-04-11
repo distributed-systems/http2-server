@@ -223,6 +223,7 @@ export default class HTTP2Server extends EventEmitter {
 
                 // sent the error only if the request was not sent already
                 if (!request.response().isSent()) {
+                    console.log(err);
                     request.response().status(500).send(err.message);
                 } else {
 
