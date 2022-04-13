@@ -119,7 +119,7 @@ export default class HTTP2Server extends EventEmitter {
         this.server.on('session', (session) => {
             this.activeSessions.add(session);
             
-            session.on('end', () => {
+            session.once('end', () => {
                 this.activeSessions.delete(session);
             });
 

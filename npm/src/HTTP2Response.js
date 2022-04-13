@@ -73,12 +73,12 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         const headers = this.getHeaderObject();
 
         const promise = new Promise((resolve, reject) => {
-            stream.on('close', () => {
+            stream.once('close', () => {
                 this.emit('close');
                 resolve();
             });
 
-            stream.on('error', (err) => {
+            stream.once('error', (err) => {
                 reject(err);
             });
         });
@@ -104,6 +104,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
             throw new Error(`Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
         
+        this.request.destroy();
 
         // wait until the data was sent
         await promise;
