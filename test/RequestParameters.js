@@ -1,7 +1,7 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import section from 'section-tests';
 import Router from '../src/Router.js';
 import assert from 'assert';
-import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.js'
+import HTTP2Client from '@distributed-systems/http2-client'
 import HTTP2Server from '../src/HTTP2Server.js';
 
 

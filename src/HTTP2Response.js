@@ -1,24 +1,14 @@
-import { HTTP2OutgoingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.js'
+import { HTTP2OutgoingMessage } from '@distributed-systems/http2-lib';
 
 
 export default class HTTP2Response extends HTTP2OutgoingMessage {
 
-    constructor({
-        request,
-    }) {
-        super();
-        this.request = request;
+    constructor(stream) {
+        super(stream);
+
         this.responseWasSent = false;
-        this._sessionIsClosed = false;
     }
 
-
-
-    setUpEvents(request) {
-        request.on('goaway', () => {
-            this._sessionIsClosed = true;
-        });
-    }
 
 
 
@@ -60,8 +50,8 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     * send the response
     */
     async send(data) {
-        if (this._sessionIsClosed) {
-            throw new Error('Cannot send response: the sesison for this stream was closed!');
+        if (this.streamIsClosed()) {
+            throw new Error(`Cannot send response, stream has ended already`);
         }
 
         this.responseWasSent = true;
@@ -69,16 +59,15 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         this.setData(data);
         this.prepareData();
 
-        const stream = this.request.stream();
         const headers = this.getHeaderObject();
 
         const promise = new Promise((resolve, reject) => {
-            stream.once('close', () => {
+            this.getStream().once('close', () => {
                 this.emit('close');
                 resolve();
             });
 
-            stream.once('error', (err) => {
+            this.getStream().once('error', (err) => {
                 reject(err);
             });
         });
@@ -86,7 +75,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         headers[':status'] = this.statusCode;
 
         try {
-            stream.respond(headers);
+            this.getRawStream().respond(headers);
         } catch (err) {
             throw new Error(`Failed to send headers for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
@@ -94,17 +83,15 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
         try {
             if (data) {
-                stream.end(this.getData());
+                this.getRawStream().end(this.getData());
             } else if (this.readStream) {
-                this.readStream.pipe(stream);
+                this.readStream.pipe(this.getRawStream());
             } else {
-                stream.end();
+                this.getRawStream().end();
             }
         } catch (err)  {
             throw new Error(`Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
-        
-        this.request.destroy();
 
         // wait until the data was sent
         await promise;

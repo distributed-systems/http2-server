@@ -1,4 +1,4 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import section from 'section-tests';
 import Router from '../src/Router.js';
 import assert from 'assert';
 

@@ -1,11 +1,16 @@
 import HTTP2Response from './HTTP2Response.js';
-import { HTTP2IncomingMessage } from '../es-modules/distributed-systems/http2-lib/x/index.js';
+import { HTTP2IncomingMessage } from '@distributed-systems/http2-lib';
 import queryString from 'querystring';
 
 
 export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
+
+    constructor(http2Stream, headers, response) {
+        super(http2Stream, headers);
+        this._response = response;
+    }
 
 
     /**
@@ -93,17 +98,11 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     * get the response object
     */
     response() {
-        if (this._sessionIsClosed) {
-            throw new Error(`Cannot create response because the session (connection) for this stream was closed (session.closed: ${this._stream.session.closed}) caused by a HTTP2 goaway frame with the nghttp2_error_code: ${this._sessionErrorName}(${this._sessionErrorCode})!`);
+        if (this.streamIsClosed()) {
+            throw new Error(`Cannot get data from stream, stream has ended already`);
         }
 
-        if (!this.responseInstance) {
-            this.responseInstance = new HTTP2Response({
-                request: this
-            });
-        }
-
-        return this.responseInstance;
+        return this._response;
     }
 
 

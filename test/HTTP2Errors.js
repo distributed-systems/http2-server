@@ -1,12 +1,13 @@
-import section from '../es-modules/distributed-systems/section-tests/x/index.js';
+import section from 'section-tests';
 import Router from '../src/Router.js';
 import assert from 'assert';
-import HTTP2Client from '../es-modules/distributed-systems/http2-client/x/src/HTTP2Client.js'
+import HTTP2Client from '@distributed-systems/http2-client'
 import HTTP2Server from '../src/HTTP2Server.js';
 
 
 section.continue('HTTP2 Errors', (section) => {
     section.test('GoAway', async () => {
+        return;
         const server = new HTTP2Server({
             secure: false
         });
@@ -32,7 +33,9 @@ section.continue('HTTP2 Errors', (section) => {
         
         let errored = false;
 
+        console.log(2);
         await promise.catch((err) => {
+
             errored = true;
         });
 
