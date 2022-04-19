@@ -27,5 +27,6 @@ section.continue('Request query parameters', (section) => {
         const request = client.get('http://l.dns.porn:8000/test-1?key=value');
         const response = await request.send();
         await server.close();
+        client.end();
     });
 });

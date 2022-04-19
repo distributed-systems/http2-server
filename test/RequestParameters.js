@@ -28,6 +28,7 @@ section.continue('Request parameters', (section) => {
         const request = client.get('http://l.dns.porn:8000/test-1');
         const response = await request.send();
         await server.close();
+        client.end();
     });
 
     section.test('One Parameter', async () => {
@@ -53,6 +54,7 @@ section.continue('Request parameters', (section) => {
         const request = client.get('http://l.dns.porn:8000/test-1/56');
         const response = await request.send();
         await server.close();
+        client.end();
     });
 
     section.test('Set Parameter', async () => {
@@ -82,5 +84,6 @@ section.continue('Request parameters', (section) => {
         const request = client.get('http://l.dns.porn:8000/test-1');
         const response = await request.send();
         await server.close();
+        client.end();
     });
 });

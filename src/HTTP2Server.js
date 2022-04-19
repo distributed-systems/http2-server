@@ -208,7 +208,7 @@ export default class HTTP2Server extends EventEmitter {
 
                 // sent the error only if the request was not sent already
                 if (!request.response().isSent()) {
-                    log.error(`The route handler errored. Sent a HTTP 500 reponse: ${err.message}`, err);
+                    log.error(`The route handler errored. Sent a HTTP 500 response: ${err.message}`, err);
                     request.response().status(500).send(err.message);
                 } else {
                     log.error(`The route handler errored but already sent a reponse: ${err.message}`, err);

@@ -45,6 +45,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'yeah!');
 
             await server.close();
+            client.end();
         });
 
 
@@ -72,6 +73,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'yeah!');
 
             await server.close();
+            client.end();
         });
 
 
@@ -100,6 +102,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data.a, 1);
 
             await server.close();
+            client.end();
         });
 
 
@@ -124,6 +127,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'text/html');
 
             await server.close();
+            client.end();
         });
 
 
@@ -148,6 +152,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'text/html');
 
             await server.close();
+            client.end();
         });
 
 
@@ -172,6 +177,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'text/html');
 
             await server.close();
+            client.end();
         });
 
 
@@ -196,6 +202,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'text/html');
 
             await server.close();
+            client.end();
         });
 
 
@@ -219,6 +226,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'application/json');
 
             await server.close();
+            client.end();
         });
 
 
@@ -245,6 +253,7 @@ section.continue('HTTP 2 Server', (section) => {
             assert.equal(data, 'test-data');
 
             await server.close();
+            client.end();
         });
     });
 });
