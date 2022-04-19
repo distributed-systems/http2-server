@@ -51,7 +51,7 @@ export default class HTTP2ServerSession extends EventEmitter {
      */
     _handleDestroyedSession(err) {
         if (err) {
-            log.error(`Session error: ${err,message}`, err);
+            log.error(`Session error: ${err.message}`, err);
             this.emit('error', err);
         }
 
