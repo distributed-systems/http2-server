@@ -44,6 +44,16 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     }
 
 
+    setMetaData(method, url) {
+        this._incomingMethod = method;
+        this._incomingURL = url;
+    }
+
+
+
+    getErrorSignature(err) {
+        return `${this._incomingMethod.toUpperCase()} request on '${this._incomingURL}' errored: ${err.message}`;
+    }
 
 
     /**

@@ -10,6 +10,8 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     constructor(http2Stream, headers, response) {
         super(http2Stream, headers);
         this._response = response;
+
+        this._response.setMetaData(this.method(), this.url());
     }
 
 
