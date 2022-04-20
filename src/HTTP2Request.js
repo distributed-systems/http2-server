@@ -100,10 +100,6 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     * get the response object
     */
     response() {
-        if (this.streamIsClosed()) {
-            throw new Error(`Cannot send response, stream is closed`);
-        }
-
         return this._response;
     }
 

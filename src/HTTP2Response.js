@@ -20,7 +20,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     * returns true if the response was already sent
     */
     isSent() {
-        return !!this.responseWasSent;
+        return this.responseWasSent;
     }
 
 
