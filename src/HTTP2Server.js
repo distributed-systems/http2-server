@@ -203,7 +203,15 @@ export default class HTTP2Server extends EventEmitter {
             // since we don't know if the route handler is async, we
             // need to wrap it so that it is handled anyways.
             await (async() => {
-                await routeHandler.handler(request);
+                const data = await routeHandler.handler(request);
+
+                if (data !== undefined) {
+                    if (!request.response().isSent()) {
+                        request.response().send(data);
+                    } else {
+                        log.warn(`The response was already sent, but the route handler returned data.`);
+                    }
+                }
             })().catch((err) => {
 
                 // sent the error only if the request was not sent already

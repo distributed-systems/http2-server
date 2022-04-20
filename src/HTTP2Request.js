@@ -101,7 +101,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
     */
     response() {
         if (this.streamIsClosed()) {
-            throw new Error(`Cannot get data from stream, stream has ended already`);
+            throw new Error(`Cannot send response, stream is closed`);
         }
 
         return this._response;
