@@ -72,12 +72,11 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         const headers = this.getHeaderObject();
 
         const promise = new Promise((resolve, reject) => {
-            this.getStream().once('close', () => {
-                this.emit('close');
+            this.getRawStream().once('close', () => {
                 resolve();
             });
 
-            this.getStream().once('error', (err) => {
+            this.getRawStream().once('error', (err) => {
                 reject(err);
             });
         });

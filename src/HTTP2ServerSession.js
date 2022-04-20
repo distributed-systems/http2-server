@@ -86,7 +86,7 @@ export default class HTTP2ServerSession extends EventEmitter {
      * @param {stream} stream
      */
     _handleStream(stream, headers) {
-        const http2Stream = new HTTP2Stream(stream);
+        const http2Stream = new HTTP2Stream(stream, `Server: ${headers[':method']} ${headers[':path']}`);
         const response = new this.HTTP2Response(http2Stream);
         const request = new this.HTTP2Request(http2Stream, headers, response);
 
