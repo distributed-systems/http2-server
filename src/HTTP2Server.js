@@ -177,15 +177,16 @@ export default class HTTP2Server extends EventEmitter {
     * handles incoming requests, sends them to the router
     */
     async _handleRequest(request) {
-        if (process.env.HTTP2_DEBUG && process.env.HTTP2_DEBUG.includes('request')) {
-            console.log(`Incoming ${request.method()} request on ${request.url()}`);
-        }
+        log.debug(`[Server] ${request.method()} request on ${request.url()}`);
 
         for (const middleware of this.middlewares.values()) {
+            log.debug(`[Server] ${request.method()} request on ${request.url()}, executing middleware`);
+
             const stopExecution = await (typeof middleware.handleRequest === 'function' ? middleware.handleRequest(request) : middleware(request));
 
             // abort if the middleware tells us to do so or the response was sent already
             if (stopExecution === false || request.response().isSent()) {
+                log.debug(`[Server] ${request.method()} request on ${request.url()}, middleware sent response, aborting further processing`);
                 return false;
             }
         }
@@ -203,10 +204,16 @@ export default class HTTP2Server extends EventEmitter {
             // since we don't know if the route handler is async, we
             // need to wrap it so that it is handled anyways.
             await (async() => {
+                log.debug(`[Server] ${request.method()} request on ${request.url()}, passing request to route handler`);
                 const data = await routeHandler.handler(request);
+
+                if (request.response().isSent()) {
+                    log.debug(`[Server] ${request.method()} request on ${request.url()}, route handler has sent a reponse`);
+                }
 
                 if (data !== undefined) {
                     if (!request.response().isSent()) {
+                        log.debug(`[Server] ${request.method()} request on ${request.url()}, sendig data returned by the route handler`);
                         request.response().send(data);
                     } else {
                         log.warn(`The response was already sent, but the route handler returned data.`);
@@ -216,10 +223,10 @@ export default class HTTP2Server extends EventEmitter {
 
                 // sent the error only if the request was not sent already
                 if (!request.response().isSent()) {
-                    log.error(`The route handler errored. Sent a HTTP 500 response: ${err.message}`, err);
+                    log.error(`[Server] ${request.method()} request on ${request.url()}: The route handler errored. Sent a HTTP 500 response: ${err.message}`, err);
                     request.response().status(500).send(err.message);
                 } else {
-                    log.error(`The route handler errored but already sent a reponse: ${err.message}`, err);
+                    log.error(`[Server] ${request.method()} request on ${request.url()}: The route handler errored but already sent a reponse: ${err.message}`, err);
                 }
             });
         } else {

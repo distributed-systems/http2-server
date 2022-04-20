@@ -1,4 +1,7 @@
 import { HTTP2OutgoingMessage } from '@distributed-systems/http2-lib';
+import logd from 'logd';
+
+const log = logd.module('HTTP2Response');
 
 
 export default class HTTP2Response extends HTTP2OutgoingMessage {
@@ -26,6 +29,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     * set the response status
     */
     status(statusCode) {
+        log.debug(`[Server] Setting status code to ${statusCode}`);
         this.statusCode = statusCode;
         return this;
     }
@@ -61,8 +65,10 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
     */
     async send(data) {
         if (this.streamIsClosed()) {
-            throw new Error(`Cannot send response, stream has ended already`);
+            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Cannot send response, stream has ended already`);
         }
+
+        log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Sending response with status code ${this.statusCode}`);
 
         this.responseWasSent = true;
 
@@ -99,11 +105,13 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
                 this.getRawStream().end();
             }
         } catch (err)  {
-            throw new Error(`Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
+            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
         }
 
         // wait until the data was sent
         await promise;
+
+        log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: reponse sent`);
 
         return this;
     }
