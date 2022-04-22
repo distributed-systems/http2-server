@@ -111,7 +111,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         // wait until the data was sent
         await promise;
 
-        log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: reponse sent`);
+        log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: response sent`);
 
         return this;
     }

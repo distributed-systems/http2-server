@@ -208,7 +208,7 @@ export default class HTTP2Server extends EventEmitter {
                 const data = await routeHandler.handler(request);
 
                 if (request.response().isSent()) {
-                    log.debug(`[Server] ${request.method()} request on ${request.url()}, route handler has sent a reponse`);
+                    log.debug(`[Server] ${request.method()} request on ${request.url()}, route handler has sent a response`);
                 }
 
                 if (data !== undefined) {

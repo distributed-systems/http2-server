@@ -6,7 +6,7 @@
   "author": "Lina van der Weg",
   "license": "MIT",
   "dependencies": {
-    "@distributed-systems/http2-lib": "^3.0.9",
+    "@distributed-systems/http2-lib": "^3.0.12",
     "logd": "^2.3.1"
   },
   "type": "module",
