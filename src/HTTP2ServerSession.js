@@ -39,7 +39,6 @@ export default class HTTP2ServerSession extends EventEmitter {
         
         this.session.once('goaway', () => {
             log.debug('The session has ended due to a goaway frame');
-            this._handleDestroyedSession();
         });
     }
 
