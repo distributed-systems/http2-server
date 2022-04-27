@@ -16,7 +16,7 @@ export default class HTTP2ServerSession extends EventEmitter {
         super();
 
         this.session = session;
-        this.session.setTimeout(timeout);
+        this.session.setTimeout(0);
 
         this.HTTP2Request = HTTP2Request;
         this.HTTP2Response = HTTP2Response;
