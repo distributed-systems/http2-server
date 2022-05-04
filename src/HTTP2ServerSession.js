@@ -22,7 +22,7 @@ export default class HTTP2ServerSession extends EventEmitter {
         this.HTTP2Response = HTTP2Response;
 
         this.session.once('timeout', () => {
-            this.end();
+            log.debug('The session has ended due to a timeout');
         });
 
         this.session.on('stream', (stream, headers) => {

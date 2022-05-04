@@ -78,6 +78,10 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         const headers = this.getHeaderObject();
 
         const promise = new Promise((resolve, reject) => {
+            if (!this.getRawStream()) {
+                return reject(`Failed to send response, stream is not available`);
+            }
+
             this.getRawStream().once('close', () => {
                 resolve();
             });
