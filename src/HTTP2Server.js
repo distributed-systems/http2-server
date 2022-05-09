@@ -138,7 +138,7 @@ export default class HTTP2Server extends EventEmitter {
             })
 
             http2Session.on('error', (err) => {
-                log.warn(`Session error: ${err,message}`, err);
+                log.warn(`Session error: ${err.message}`, err);
             });
         });
 
