@@ -238,7 +238,9 @@ export default class HTTP2Server extends EventEmitter {
                 }
             });
         } else {
-            request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
+            if (!request.response().isSent()) {
+                request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
+            }
         }
     }
 }
