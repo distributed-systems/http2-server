@@ -1,6 +1,6 @@
 {
   "name": "@distributed-systems/http2-server",
-  "version": "3.0.15",
+  "version": "3.0.16",
   "description": "a simple http2 server with some basic routing functionality",
   "main": "./src/HTTP2Server.js",
   "author": "Lina van der Weg",
