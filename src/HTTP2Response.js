@@ -97,10 +97,22 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
         // send data
         try {
-            if (data) {
-                stream.end(this.getData());
-            } else if (this.readStream) {
-                this.readStream.pipe(stream);
+            if (data || this.readStream) {
+                if (this._incomingMethod.toUpperCase() === 'HEAD') {
+                    // HEAD requests don't have a body
+                    log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: HEAD request, omitting body that was provided!`);
+                    stream.end();
+                } else {
+                    if (!stream.writable) {
+                        throw new Error(`Stream is not writable, cannot send reponse data!`);
+                    }
+
+                    if (data) {
+                        stream.end(this.getData());
+                    } else if (this.readStream) {
+                        this.readStream.pipe(stream);
+                    }
+                }
             } else {
                 stream.end();
             }

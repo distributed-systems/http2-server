@@ -222,24 +222,24 @@ export default class HTTP2Server extends EventEmitter {
                 if (data !== undefined) {
                     if (!request.response().isSent()) {
                         log.debug(`[Server] ${request.method()} request on ${request.url()}, sendig data returned by the route handler`);
-                        request.response().send(data);
+                        await request.response().send(data);
                     } else {
                         log.warn(`The response was already sent, but the route handler returned data.`);
                     }
                 }
-            })().catch((err) => {
+            })().catch(async (err) => {
 
                 // sent the error only if the request was not sent already
                 if (!request.response().isSent()) {
                     log.error(`[Server] ${request.method()} request on ${request.url()}: The route handler errored. Sent a HTTP 500 response: ${err.message}`, err);
-                    request.response().status(500).send(err.message);
+                    await request.response().status(500).send(err.message);
                 } else {
                     log.error(`[Server] ${request.method()} request on ${request.url()}: The route handler errored but already sent a reponse: ${err.message}`, err);
                 }
             });
         } else {
             if (!request.response().isSent()) {
-                request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
+                await request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
             }
         }
     }
