@@ -77,43 +77,49 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
         const headers = this.getHeaderObject();
 
-        const promise = new Promise((resolve, reject) => {
-            if (!this.getRawStream()) {
-                return reject(`Failed to send response, stream is not available`);
-            }
-
-            this.getRawStream().once('close', () => {
-                resolve();
-            });
-
-            this.getRawStream().once('error', (err) => {
-                reject(err);
-            });
-        });
-
+        
         headers[':status'] = this.statusCode;
 
+
+        // make sure we've got a stream
+        const stream = this.getRawStream();
+        if (!stream) {
+            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Failed to send response, stream is not available`);
+        }
+        
+        // send headers
         try {
-            this.getRawStream().respond(headers);
+            stream.respond(headers);
         } catch (err) {
-            throw new Error(`Failed to send headers for response of the request to the path ${this.request.path()}: ${err.message}`);
+            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Failed to send headers for response: ${err.message}`);
         }
         
 
+        // send data
         try {
             if (data) {
-                this.getRawStream().end(this.getData());
+                stream.end(this.getData());
             } else if (this.readStream) {
-                this.readStream.pipe(this.getRawStream());
+                this.readStream.pipe(stream);
             } else {
-                this.getRawStream().end();
+                stream.end();
             }
         } catch (err)  {
-            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Failed to end stream for response of the request to the path ${this.request.path()}: ${err.message}`);
+            throw new Error(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: Failed to end stream for response: ${err.message}`);
         }
 
-        // wait until the data was sent
-        await promise;
+        // wait until the stream is clsoed
+        if (!stream.closed) {
+            await new Promise((resolve, reject) => {
+                stream.once('close', () => {
+                    resolve();
+                });
+    
+                stream.once('error', (err) => {
+                    reject(err);
+                });
+            });
+        }
 
         log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: response sent`);
 
