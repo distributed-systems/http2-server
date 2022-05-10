@@ -40,6 +40,14 @@ export default class HTTP2ServerSession extends EventEmitter {
         this.session.once('goaway', () => {
             log.debug('The session has ended due to a goaway frame');
         });
+
+
+        // since node is telling me that i'm adding more than
+        // 10 goaway handlers to one session i need ot track this
+        // since i dont have an explanation for this
+        if (this.session.listenerCount('goaway') > 1) {
+            log.warn('[Server] Session has more than one goaway handler which is plain wrong!');
+        }
     }
 
 

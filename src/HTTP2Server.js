@@ -121,7 +121,7 @@ export default class HTTP2Server extends EventEmitter {
 
         // make sure we can access all active sessions so that
         // we can tell them to go away when the server shuts down
-        this.server.on('session', (session) => {            
+        this.server.on('session', (session) => {
             const http2Session = new HTTP2ServerSession(session, {
                 HTTP2Request,
                 HTTP2Response,
