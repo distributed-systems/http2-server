@@ -99,9 +99,7 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
         try {
             if (data || this.readStream) {
                 if (this._incomingMethod.toUpperCase() === 'HEAD') {
-                    // HEAD requests don't have a body
-                    log.debug(`[Server Response] ${this._incomingMethod.toUpperCase()} ${this._incomingURL}: HEAD request, omitting body that was provided!`);
-                    stream.end();
+                    throw new Error(`Cannot send body for HEAD request`);
                 } else {
                     if (!stream.writable) {
                         throw new Error(`Stream is not writable, cannot send reponse data!`);

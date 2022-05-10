@@ -54,8 +54,8 @@ section.continue('Request Types', (section) => {
         });
 
 
-        server.getRouter().head('/test-head', (request) => {
-            request.response().status(200).send('invalid');
+        server.getRouter().head('/test-head', async (request) => {
+            await request.response().status(200).send('invalid');
         });
 
 

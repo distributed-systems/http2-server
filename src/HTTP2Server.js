@@ -209,11 +209,9 @@ export default class HTTP2Server extends EventEmitter {
         
             request.setParameters(routeHandler.parameters);
 
-            // since we don't know if the route handler is async, we
-            // need to wrap it so that it is handled anyways.
-            await (async() => {
+            try {
                 log.debug(`[Server] ${request.method()} request on ${request.url()}, passing request to route handler`);
-                const data = await routeHandler.handler(request);
+                const data = await Promise.resolve(routeHandler.handler(request));
 
                 if (request.response().isSent()) {
                     log.debug(`[Server] ${request.method()} request on ${request.url()}, route handler has sent a response`);
@@ -227,7 +225,7 @@ export default class HTTP2Server extends EventEmitter {
                         log.warn(`The response was already sent, but the route handler returned data.`);
                     }
                 }
-            })().catch(async (err) => {
+            } catch(err) {
 
                 // sent the error only if the request was not sent already
                 if (!request.response().isSent()) {
@@ -236,10 +234,16 @@ export default class HTTP2Server extends EventEmitter {
                 } else {
                     log.error(`[Server] ${request.method()} request on ${request.url()}: The route handler errored but already sent a reponse: ${err.message}`, err);
                 }
-            });
+            }
         } else {
             if (!request.response().isSent()) {
-                await request.response().status(404).send(`Path '${request.path()}' for method '${request.method()}' not found!`);
+                let payload;
+
+                if (!request.method('head')) {
+                    payload = `Path '${request.path()}' for method '${request.method()}' not found!`;
+                }
+
+                await request.response().status(404).send(payload);
             }
         }
     }
