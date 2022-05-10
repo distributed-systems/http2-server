@@ -89,6 +89,14 @@ export default class HTTP2ServerSession extends EventEmitter {
         const response = new this.HTTP2Response(http2Stream);
         const request = new this.HTTP2Request(http2Stream, headers, response);
 
+        response.once('error', (err) => {
+            log.warn(`[Server Reponse ${headers[':method']} ${headers[':path']}] Error: ${err.message}`, err);
+        });
+
+        request.once('error', (err) => {
+            log.warn(`[Server Request ${headers[':method']} ${headers[':path']}] Error: ${err.message}`, err);
+        });
+
         this.emit('request', request);
     }
 
