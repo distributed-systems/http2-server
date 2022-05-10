@@ -134,7 +134,9 @@ export default class HTTP2Server extends EventEmitter {
             });
 
             http2Session.on('request', (request) => {
-                this._handleRequest(request);
+                this._handleRequest(request).catch((err) => {
+                    log.error(`Error handling request: ${err.message}`, err);
+                });
             })
 
             http2Session.on('error', (err) => {
