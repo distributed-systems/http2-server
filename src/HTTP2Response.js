@@ -55,6 +55,48 @@ export default class HTTP2Response extends HTTP2OutgoingMessage {
 
 
 
+    setCookie(name, value, options = {}) {
+        let cookie = `${name}=${value}`;
+
+        for (const [option, value] of Object.entries(options)) {
+            if (option == 'expires') continue;
+            cookie += `; ${option}=${value}`;
+        }
+
+        if (options.expires) {
+            let expires = options.expires;
+
+            if (typeof expires == 'number') {
+                options.expires = new Date(expires);
+            }
+
+            if (expires && expires.toUTCString) {
+                expires = expires.toUTCString();
+            }
+
+            cookie += `; Expires=${expires}`;
+        }
+
+        // set the cookie
+        if (this.hasHeader('set-cookie')) {
+            this.setHeader('set-cookie', `${this.getHeader('set-cookie')}, ${cookie}`);
+        } else {
+            this.setHeader('set-cookie', cookie);
+        }
+
+        return this;
+    }
+
+
+    setCookies(cookies) {
+        for (const {name, value, options} of cookies) {
+            this.setCookie(name, value, options);
+        }
+
+        return this;
+    }
+
+
     getErrorSignature(err) {
         return `${this._incomingMethod.toUpperCase()} request on '${this._incomingURL}' errored: ${err.message}`;
     }

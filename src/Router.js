@@ -104,7 +104,7 @@ export default class Router {
             // expression using named capturing groups
             route = this.regexify(route);
 
-            if (methodName === 'any') {
+            if (methodName === 'any' || methodName === '*') {
 
                 // add the wildcard route to every queue
                 for (const map of this.routes.values()) {

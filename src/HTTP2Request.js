@@ -94,6 +94,28 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
         return this.getQueryParameters().has(name);
     }
 
+    
+
+    hasCookie(name) {
+        if (this.hasHeader('cookie')) {
+            const cookies = this.getHeader('cookie');
+            const cookie = cookies.split(';').find(c => c.trim().startsWith(`${name}=`));
+
+            return !!cookie;
+        }
+        return false;
+    }
+
+
+
+    getCookie(name) {
+        if (this.hasCookie(name)) {
+            const cookies = this.getHeader('cookie');
+            const cookie = cookies.split(';').find(c => c.trim().startsWith(`${name}=`));
+
+            return cookie.split('=')[1];
+        }
+    }
 
 
     /**
