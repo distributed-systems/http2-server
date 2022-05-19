@@ -94,7 +94,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
         return this.getQueryParameters().has(name);
     }
 
-    
+
 
     hasCookie(name) {
         if (this.hasHeader('cookie')) {
@@ -115,6 +115,30 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
             return cookie.split('=')[1];
         }
+    }
+
+
+
+
+
+    getCookies() {
+        const cookies = [];
+
+        if (this.hasHeader('cookie')) {
+            const cookieString = this.getHeader('cookie');
+            const cookieArray = cookieString.split(';');
+            
+
+            for (const cookie of cookieArray) {
+                cookieParts = cookie.split('=');
+                cookies.push({
+                    name: cookieParts[0].trim(), 
+                    value: cookieParts[1].trim()
+                });
+            }
+        }
+
+        return cookies;
     }
 
 
