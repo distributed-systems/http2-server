@@ -120,7 +120,6 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
 
 
 
-
     getCookies() {
         const cookies = [];
 
@@ -130,7 +129,7 @@ export default class HTTP2Request extends HTTP2IncomingMessage {
             
 
             for (const cookie of cookieArray) {
-                cookieParts = cookie.split('=');
+                const cookieParts = cookie.split('=');
                 cookies.push({
                     name: cookieParts[0].trim(), 
                     value: cookieParts[1].trim()
